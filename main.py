@@ -28,7 +28,7 @@ print("\nCleaned & Normalized Data Preview:")
 print(df[['scaled_time', 'scaled_amount', 'Class']].head())
 print(f"\nFinal Shape: {df.shape}")
 
-# 6. Save cleaned data to a separate CSV
-output_file = 'cleaned_creditcard.csv'
-df.to_csv(output_file, index=False)
+# 6. Save cleaned data to a separate compressed CSV (.zip)
+output_file = 'cleaned_creditcard.csv.zip'
+df.to_csv(output_file, index=False, compression={'method': 'zip', 'archive_name': 'cleaned_creditcard.csv'})
 print(f"Cleaned dataset saved successfully to {output_file}")
