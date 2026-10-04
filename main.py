@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, roc_auc_score
 
 # 1. Load dataset directly from zip
 df = pd.read_csv('creditcard.csv.zip')
@@ -48,3 +50,24 @@ print(f"\nData Splits (80-10-10):")
 print(f"Train set:      {X_train.shape[0]} samples ({X_train.shape[0] / len(df):.0%})")
 print(f"Validation set: {X_val.shape[0]} samples ({X_val.shape[0] / len(df):.0%})")
 print(f"Test set:       {X_test.shape[0]} samples ({X_test.shape[0] / len(df):.0%})")
+
+# 8. Train Random Forest Model
+print("\nTraining Random Forest Classifier...")
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1, class_weight='balanced')
+rf_model.fit(X_train, y_train)
+
+# 9. Evaluate on Validation Set
+val_preds = rf_model.predict(X_val)
+val_probs = rf_model.predict_proba(X_val)[:, 1]
+print("\n--- Validation Set Results ---")
+print(f"ROC-AUC: {roc_auc_score(y_val, val_probs):.4f}")
+print("Classification Report:")
+print(classification_report(y_val, val_preds, digits=4))
+
+# 10. Evaluate on Test Set
+test_preds = rf_model.predict(X_test)
+test_probs = rf_model.predict_proba(X_test)[:, 1]
+print("--- Test Set Results ---")
+print(f"ROC-AUC: {roc_auc_score(y_test, test_probs):.4f}")
+print("Classification Report:")
+print(classification_report(y_test, test_preds, digits=4))
